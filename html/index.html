@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Local Community Event Portal</title>
+    <!-- Link to Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Internal CSS for body background only -->
+    <style>
+        /* Body background for demonstration */
+        body {
+            background: #f0f4f8;
+        }
+    </style>
+    <script>
+        // Exercise 5: Form submission confirmation
+        function showConfirmation(e) {
+            e.preventDefault();
+            document.getElementById('outputMsg').value = "Thank you for registering!";
+        }
+        // Exercise 6: Phone validation
+        function validatePhone(e) {
+            const val = e.value;
+            if (!/^\d{10}$/.test(val)) {
+                alert("Enter a valid 10-digit phone number.");
+                e.focus();
+            }
+        }
+        // Exercise 6: Dropdown fee display
+        function showFee(sel) {
+            const fees = { "music": "$10", "sports": "$5", "art": "$8" };
+            document.getElementById('feeDisplay').textContent = "Fee: " + (fees[sel.value] || "$0");
+        }
+        // Exercise 6: Image enlarge on dblclick
+        function enlargeImg(img) {
+            img.classList.toggle('enlarged');
+        }
+        // Exercise 6: Character count in feedback
+        function countChars(e) {
+            document.getElementById('charCount').textContent = e.value.length + " chars";
+        }
+        // Exercise 7: Video ready
+        function videoReady() {
+            document.getElementById('videoMsg').textContent = "Video ready to play";
+        }
+        // Exercise 7: Warn on leaving unfinished form
+        window.onbeforeunload = function() {
+            const name = document.getElementById('name').value;
+            if (name) return "You have unsaved changes!";
+        };
+        // Exercise 8: Save/retrieve/clear preferences
+        function savePref(sel) {
+            localStorage.setItem('eventType', sel.value);
+        }
+        function loadPref() {
+            const pref = localStorage.getItem('eventType');
+            if (pref) {
+                document.getElementById('eventType').value = pref;
+                showFee(document.getElementById('eventType'));
+            }
+        }
+        function clearPrefs() {
+            localStorage.clear();
+            sessionStorage.clear();
+            alert("Preferences cleared!");
+        }
+        // Exercise 9: Geolocation
+        function findNearby() {
+            const geoResult = document.getElementById('geoResult');
+            if (!navigator.geolocation) {
+                geoResult.textContent = "Geolocation not supported.";
+                return;
+            }
+            geoResult.textContent = "Locating...";
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    geoResult.textContent = "Your coordinates: " + pos.coords.latitude + ", " + pos.coords.longitude;
+                },
+                err => {
+                    geoResult.textContent = "Error: " + err.message;
+                },
+                { enableHighAccuracy: true, timeout: 5000 }
+            );
+        }
+        // Exercise 8: On load, retrieve preferences
+        window.onload = loadPref;
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="#home" class="highlight">Home</a> |
+        <a href="#events">Events</a> |
+        <a href="#contact">Contact</a> |
+        <a href="help.html" target="_blank">Help</a>
+    </nav>
+
+    <!-- Main -->
+    <main>
+        <!-- Home Section -->
+        <section id="home">
+            <!-- Welcome Banner -->
+            <div id="welcomeBanner" id="mainHeader">
+                <!-- Inline style to make heading red -->
+                <h1 style="color: #d32f2f;">Welcome, <span class="highlight">Community Member!</span></h1>
+                <span style="color:red; font-weight:bold;">Special Offer: Free entry for first 50 signups!</span>
+            </div>
+        </section>
+
+        <!-- Events Section -->
+        <section id="events">
+            <!-- Inline style to make heading red (for demonstration) -->
+            <h2 style="color: #d32f2f;">Upcoming & Past Events</h2>
+            <!-- Image Gallery Table -->
+            <table>
+                <caption>Past Community Events</caption>
+                <tr>
+                    <td>
+                        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Music Night" title="Music Night" class="event-img" ondblclick="enlargeImg(this)">
+                        <div class="highlight eventCard">Music Night</div>
+                    </td>
+                    <td>
+                        <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="Art Fair" title="Art Fair" class="event-img" ondblclick="enlargeImg(this)">
+                        <div class="eventCard">Art Fair</div>
+                    </td>
+                    <td>
+                        <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=400&q=80" alt="Sports Day" title="Sports Day" class="event-img" ondblclick="enlargeImg(this)">
+                        <div class="eventCard">Sports Day</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Food Fest" title="Food Fest" class="event-img" ondblclick="enlargeImg(this)">
+                        <div class="eventCard">Food Fest</div>
+                    </td>
+                    <td>
+                        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Book Club" title="Book Club" class="event-img" ondblclick="enlargeImg(this)">
+                        <div class="eventCard">Book Club</div>
+                    </td>
+                    <td>
+                        <img src="https://images.unsplash.com/photo-1468421870903-4df1664ac249?auto=format&fit=crop&w=400&q=80" alt="Charity Run" title="Charity Run" class="event-img" ondblclick="enlargeImg(this)">
+                        <div class="eventCard">Charity Run</div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Event Registration Form -->
+            <h3>Register for an Event</h3>
+            <form onsubmit="showConfirmation(event)">
+                <label>Name:
+                    <input type="text" id="name" name="name" placeholder="Your Name" required autofocus>
+                </label>
+                <label>Email:
+                    <input type="email" name="email" placeholder="you@example.com" required>
+                </label>
+                <label>Phone:
+                    <input type="text" name="phone" placeholder="10-digit phone" onblur="validatePhone(this)">
+                </label>
+                <label>Date:
+                    <input type="date" name="date" required>
+                </label>
+                <label>Event Type:
+                    <select id="eventType" name="eventType" onchange="showFee(this); savePref(this);" required>
+                        <option value="">Select</option>
+                        <option value="music">Music Night</option>
+                        <option value="sports">Sports Day</option>
+                        <option value="art">Art Fair</option>
+                    </select>
+                    <span id="feeDisplay" class="highlight"></span>
+                </label>
+                <label>Message:
+                    <textarea name="message" placeholder="Your message" onkeyup="countChars(this)"></textarea>
+                    <span id="charCount">0 chars</span>
+                </label>
+                <button type="submit" onclick="showConfirmation(event)">Submit</button>
+                <output id="outputMsg"></output>
+            </form>
+            <button onclick="clearPrefs()">Clear Preferences</button>
+        </section>
+
+        <!-- Feedback Section -->
+        <section>
+            <h3>Event Feedback</h3>
+            <form>
+                <label>Feedback:
+                    <textarea onkeyup="countChars(this)" placeholder="Type your feedback"></textarea>
+                    <span id="charCount">0 chars</span>
+                </label>
+                <button type="button" onclick="alert('Feedback submitted!')">Send Feedback</button>
+            </form>
+        </section>
+
+        <!-- Video Invite Section -->
+        <section>
+            <h3>Event Promo Video</h3>
+            <video width="320" controls oncanplay="videoReady()">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div id="videoMsg"></div>
+        </section>
+
+        <!-- Geolocation Section -->
+        <section>
+            <h3>Find Nearby Events</h3>
+            <button onclick="findNearby()">Find Nearby Events</button>
+            <div id="geoResult"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Local City Council. <span class="highlight">All rights reserved.</span></p>
+    </footer>
+</body>
+</html>
